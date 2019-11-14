@@ -1,18 +1,12 @@
 # Install node and npm
-if test ! $(which nvm)
-then
-  echo "  Installing Node Version Manager for you."
-  brew install nvm
-  mkdir -p ~/.nvm
-  export NVM_DIR=~/.nvm
-  source $(brew --prefix nvm)/nvm.sh
-fi
+echo "  Installing Node Version Manager for you."
+brew install nvm || brew upgrade nvm
+mkdir -p ~/.nvm
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
 
-if test ! $(which node)
-then
-  echo "  Installing Node for you."
-  nvm install 6
-fi
+echo "  Installing Node for you."
+nvm install 6
 
 echo " Updating npm for you."
 npm install npm@latest -g
