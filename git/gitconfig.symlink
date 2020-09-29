@@ -16,7 +16,7 @@
         ui = true
 [core]
 	excludesfile = /Users/daniel/.gitignore
-        editor = code
+        editor = code --wait
 [apply]
         whitespace = nowarn
 [mergetool]
