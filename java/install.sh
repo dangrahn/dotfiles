@@ -1,8 +1,6 @@
 #!/bin/sh
 
 # Install Java
-if test ! $(which java)
-then
-	brew install --cask homebrew/cask-versions/java11
-	brew install --cask java
-fi
+brew tap adoptopenjdk/openjdk
+brew install --cask adoptopenjdk14
+brew install --cask adoptopenjdk15
