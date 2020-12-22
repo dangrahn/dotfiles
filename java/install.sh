@@ -3,6 +3,6 @@
 # Install Java
 if test ! $(which java)
 then
-	brew cask install homebrew/cask-versions/java11
-	brew cask install java
+	brew install --cask homebrew/cask-versions/java11
+	brew install --cask java
 fi
