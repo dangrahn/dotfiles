@@ -6,7 +6,7 @@ export NVM_DIR=~/.nvm
 source $(brew --prefix nvm)/nvm.sh
 
 echo "  Installing Node for you."
-nvm install 6
+nvm install 16
 
 echo " Updating npm for you."
-npm install npm@latest -g
+npm install -g npm
