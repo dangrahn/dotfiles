@@ -40,3 +40,6 @@
 	defaultBranch = main
 [pull]
 	rebase = true
+[user]
+	email = dangrahn@gmail.com
+	name = Daniel Grahn
