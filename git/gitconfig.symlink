@@ -15,8 +15,8 @@
         branch = auto
         ui = true
 [core]
-	excludesfile = /Users/daniel/.gitignore
-        editor = code --wait
+        excludesfile = ~/.gitignore
+        editor = vim
 [apply]
         whitespace = nowarn
 [mergetool]
@@ -33,12 +33,10 @@
         default = simple
 [credential]
 	helper = osxkeychain
-[user]
-	name = Daniel Grahn
-	email = dangrahn@gmail.com
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+[diff "spaceman-diff"]
+  command = /opt/homebrew/bin/spaceman-diff
+
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
