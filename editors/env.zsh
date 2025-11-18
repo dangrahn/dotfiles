@@ -1,1 +1,1 @@
-export EDITOR='cursor'
+export EDITOR='code'
