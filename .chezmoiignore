@@ -1,0 +1,13 @@
+# Files chezmoi should ignore
+
+# Repository files
+README.md
+LICENSE
+
+# Generated files (Antidote creates these)
+**/.zsh_plugins.zsh
+**/.zcompdump*
+
+# Local machine-specific overrides
+**/.zshrc.local
+**/.gitconfig.local

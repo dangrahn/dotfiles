@@ -1,0 +1,7 @@
+# External dependencies managed by chezmoi
+# These are cloned/updated automatically during chezmoi apply
+
+[".local/share/antidote"]
+    type = "git-repo"
+    url = "https://github.com/mattmc3/antidote.git"
+    refreshPeriod = "168h"  # Update weekly

@@ -1,0 +1,17 @@
+# Antidote plugins - one per line
+# Syntax: github-user/repo kind:type path:subpath
+
+# Completions (load early via fpath)
+zsh-users/zsh-completions kind:fpath
+
+# Core functionality from oh-my-zsh (cherry-picked)
+ohmyzsh/ohmyzsh path:lib/history.zsh
+ohmyzsh/ohmyzsh path:lib/key-bindings.zsh
+
+# Useful plugins
+ohmyzsh/ohmyzsh path:plugins/git
+ohmyzsh/ohmyzsh path:plugins/docker
+
+# Syntax highlighting and suggestions (load last)
+zsh-users/zsh-autosuggestions
+zsh-users/zsh-syntax-highlighting

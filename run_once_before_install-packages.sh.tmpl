@@ -1,0 +1,28 @@
+#!/bin/bash
+# run_once_before_install-packages.sh
+# This script runs once during chezmoi apply (before other files)
+# The 'before' prefix ensures it runs before dotfiles are applied
+
+set -e
+
+echo "=== Setting up dotfiles ==="
+
+# Ensure Homebrew is in PATH
+if [[ -d /home/linuxbrew/.linuxbrew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# Install Homebrew packages
+if command -v brew &> /dev/null; then
+    echo "Installing Homebrew packages..."
+    brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile" --no-lock
+else
+    echo "WARNING: Homebrew not found. Please install it first:"
+    echo '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+    exit 1
+fi
+
+# Ensure zsh history directory exists
+mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/zsh"
+
+echo "=== Package installation complete ==="

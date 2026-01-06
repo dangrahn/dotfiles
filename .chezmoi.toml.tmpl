@@ -1,0 +1,15 @@
+# chezmoi configuration
+# This file prompts for user data during 'chezmoi init'
+
+{{- $email := promptStringOnce . "email" "Email address" -}}
+{{- $name := promptStringOnce . "name" "Full name" -}}
+
+[data]
+    email = {{ $email | quote }}
+    name = {{ $name | quote }}
+
+[diff]
+    pager = "delta"
+
+[edit]
+    command = "vim"

@@ -1,0 +1,8 @@
+# ~/.zshenv - Bootstrap file
+# This is the ONLY zsh file in $HOME
+# It redirects all zsh config to ZDOTDIR
+
+export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+
+# Source ZDOTDIR's .zshenv if it exists
+[[ -f "$ZDOTDIR/.zshenv" ]] && source "$ZDOTDIR/.zshenv"
