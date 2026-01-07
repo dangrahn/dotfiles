@@ -1,0 +1,54 @@
+#!/bin/bash
+# Install all official Claude Code plugins
+# This runs whenever the list of plugins changes
+# hash: {{ "claude-plugins-v1-all-official" | sha256sum }}
+
+set -e
+
+# Check if claude CLI is available
+if ! command -v claude &> /dev/null; then
+    echo "Claude CLI not found, skipping plugin installation"
+    exit 0
+fi
+
+echo "Installing official Claude Code plugins..."
+
+# List of all official plugins from anthropics/claude-plugins-official
+OFFICIAL_PLUGINS=(
+    "agent-sdk-dev"
+    "clangd-lsp"
+    "code-review"
+    "commit-commands"
+    "csharp-lsp"
+    "explanatory-output-style"
+    "feature-dev"
+    "frontend-design"
+    "gopls-lsp"
+    "hookify"
+    "jdtls-lsp"
+    "learning-output-style"
+    "lua-lsp"
+    "php-lsp"
+    "plugin-dev"
+    "pr-review-toolkit"
+    "pyright-lsp"
+    "ralph-loop"
+    "rust-analyzer-lsp"
+    "security-guidance"
+    "swift-lsp"
+    "typescript-lsp"
+)
+
+# Install each plugin
+for plugin in "${OFFICIAL_PLUGINS[@]}"; do
+    echo "Installing plugin: $plugin"
+    if claude plugin install "$plugin" --scope user 2>/dev/null; then
+        echo "  ✓ Installed: $plugin"
+    else
+        echo "  ⚠ Already installed or failed: $plugin"
+    fi
+done
+
+echo ""
+echo "Claude Code plugins installation complete!"
+echo "Restart Claude Code to use the new plugins."
