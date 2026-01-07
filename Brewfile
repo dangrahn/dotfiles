@@ -1,8 +1,6 @@
 # Brewfile - Homebrew packages
 # Install with: brew bundle --file=Brewfile
 
-tap "homebrew/bundle"
-
 # Core
 brew "chezmoi"
 
