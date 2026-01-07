@@ -1,0 +1,69 @@
+#!/bin/bash
+# Setup Claude Code skills by symlinking from community repos
+# This runs whenever .chezmoiexternal.toml changes (new repos added)
+# hash: {{ include ".chezmoiexternal.toml" | sha256sum }}
+
+set -e
+
+CLAUDE_DIR="$HOME/.claude"
+SKILLS_DIR="$CLAUDE_DIR/skills"
+COMMUNITY_DIR="$CLAUDE_DIR/community"
+
+# Create skills directory if it doesn't exist
+mkdir -p "$SKILLS_DIR"
+
+# Exit if no community repos exist yet
+if [ ! -d "$COMMUNITY_DIR" ]; then
+    echo "No community skills directory found at $COMMUNITY_DIR"
+    exit 0
+fi
+
+echo "Setting up Claude Code skills..."
+
+# Track skills we've processed to handle conflicts
+declare -A processed_skills
+
+# Loop through each community repo
+for repo in "$COMMUNITY_DIR"/*/; do
+    [ -d "$repo" ] || continue
+    repo_name=$(basename "$repo")
+    echo "Processing community repo: $repo_name"
+
+    # Loop through each potential skill directory in the repo
+    for skill_dir in "$repo"*/; do
+        [ -d "$skill_dir" ] || continue
+        skill_name=$(basename "$skill_dir")
+
+        # Skip hidden directories and common non-skill directories
+        [[ "$skill_name" == .* ]] && continue
+        [[ "$skill_name" == "node_modules" ]] && continue
+        [[ "$skill_name" == "__pycache__" ]] && continue
+
+        # Check if this directory contains a SKILL.md file
+        if [ -f "$skill_dir/SKILL.md" ]; then
+            target_link="$SKILLS_DIR/$skill_name"
+
+            # Check for conflicts
+            if [ -n "${processed_skills[$skill_name]}" ]; then
+                echo "  Warning: Skill '$skill_name' already exists from ${processed_skills[$skill_name]}, skipping"
+                continue
+            fi
+
+            # Remove existing symlink or directory
+            if [ -L "$target_link" ]; then
+                rm "$target_link"
+            elif [ -d "$target_link" ]; then
+                echo "  Warning: '$skill_name' is a local skill directory, skipping"
+                continue
+            fi
+
+            # Create symlink
+            ln -s "$skill_dir" "$target_link"
+            echo "  Linked: $skill_name"
+            processed_skills[$skill_name]="$repo_name"
+        fi
+    done
+done
+
+echo "Claude Code skills setup complete!"
+echo "Skills available in: $SKILLS_DIR"

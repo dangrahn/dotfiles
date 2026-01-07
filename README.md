@@ -98,7 +98,7 @@ Node.js 23, opencode, and claude-code are installed automatically during chezmoi
 ```
 .
 ├── .chezmoi.toml.tmpl      # chezmoi config (prompts for user data)
-├── .chezmoiexternal.toml   # External deps (Antidote)
+├── .chezmoiexternal.toml   # External deps (Antidote, Claude skills)
 ├── .chezmoiignore          # Files to skip
 ├── Brewfile                # Homebrew packages
 ├── dot_zshenv              # Bootstrap (sets ZDOTDIR)
@@ -115,6 +115,42 @@ Node.js 23, opencode, and claude-code are installed automatically during chezmoi
 │   └── starship.toml       # Prompt config
 ├── run_once_before_*.sh    # Package installation
 └── run_once_after_*.sh     # Node.js & npm setup
+```
+
+## Claude Code Skills
+
+Community skills are managed via `.chezmoiexternal.toml` and automatically symlinked to `~/.claude/skills/`.
+
+### Structure
+
+```
+~/.claude/
+├── community/                    # Git repos (auto-cloned by chezmoi)
+│   └── awesome-claude-skills/    # ComposioHQ community skills
+└── skills/                       # Symlinks to individual skills
+    ├── artifacts-builder -> ../community/awesome-claude-skills/artifacts-builder
+    └── ...
+```
+
+### Adding More Community Skill Repos
+
+Edit `.chezmoiexternal.toml`:
+
+```toml
+[".claude/community/another-skills-repo"]
+    type = "git-repo"
+    url = "https://github.com/user/another-skills-repo.git"
+    refreshPeriod = "168h"
+```
+
+Then run `chezmoi apply` - the setup script will automatically symlink any new skills.
+
+### Updating Skills
+
+Skills repos update automatically weekly. To force an update:
+
+```bash
+chezmoi apply --refresh-externals
 ```
 
 ## Daily Usage

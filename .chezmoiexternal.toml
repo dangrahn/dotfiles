@@ -5,3 +5,10 @@
     type = "git-repo"
     url = "https://github.com/mattmc3/antidote.git"
     refreshPeriod = "168h"  # Update weekly
+
+# Claude Code community skills
+# Add more community skill repos here - they'll be auto-symlinked to ~/.claude/skills/
+[".claude/community/awesome-claude-skills"]
+    type = "git-repo"
+    url = "https://github.com/ComposioHQ/awesome-claude-skills.git"
+    refreshPeriod = "168h"  # Update weekly
