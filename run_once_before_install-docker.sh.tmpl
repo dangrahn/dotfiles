@@ -1,12 +1,65 @@
 #!/bin/bash
-# Install Docker Engine on Linux (Debian/Ubuntu)
-# Skips on macOS (use Docker Desktop via Brewfile)
+# Install Docker with architecture detection
+# - macOS: Download and install Docker Desktop for correct architecture (Apple Silicon or Intel)
+# - Linux: Install Docker Engine from official repositories
 
 set -e
 
 {{ if eq .chezmoi.os "darwin" }}
-# Skip on macOS
-echo "macOS detected - Docker Desktop will be installed via Homebrew"
+# macOS: Install Docker Desktop for the correct architecture
+echo "Installing Docker Desktop for macOS..."
+
+# Detect actual hardware architecture first
+CPU_BRAND=$(sysctl -n machdep.cpu.brand_string 2>/dev/null || echo "")
+IS_APPLE_SILICON=false
+if [[ "$CPU_BRAND" =~ "Apple" ]]; then
+    IS_APPLE_SILICON=true
+fi
+
+# Check if Docker is already installed
+if [ -d "/Applications/Docker.app" ]; then
+    echo "Docker Desktop is already installed"
+    # Verify it's the correct architecture
+    if [ "$IS_APPLE_SILICON" = true ] && [ -f "/Applications/Docker.app/Contents/MacOS/Docker" ]; then
+        DOCKER_ARCH=$(file /Applications/Docker.app/Contents/MacOS/Docker | grep -o "arm64\|x86_64" | head -1)
+        if [ "$DOCKER_ARCH" != "arm64" ]; then
+            echo "WARNING: Docker Desktop architecture mismatch detected!"
+            echo "System: Apple Silicon ($CPU_BRAND)"
+            echo "Installed Docker: x86_64 (Intel)"
+            echo ""
+            echo "To fix this:"
+            echo "1. Uninstall current Docker Desktop: sudo rm -rf /Applications/Docker.app"
+            echo "2. Rerun: chezmoi apply"
+            exit 1
+        fi
+    fi
+    echo "Architecture verified: Docker Desktop matches system architecture"
+    exit 0
+fi
+
+# Set download URL based on detected architecture
+if [ "$IS_APPLE_SILICON" = true ]; then
+    echo "Installing Docker Desktop for Apple Silicon: $CPU_BRAND"
+    DOCKER_URL="https://desktop.docker.com/mac/main/arm64/Docker.dmg"
+else
+    echo "Installing Docker Desktop for Intel Mac"
+    DOCKER_URL="https://desktop.docker.com/mac/main/amd64/Docker.dmg"
+fi
+
+# Download Docker Desktop
+echo "Downloading Docker Desktop from $DOCKER_URL..."
+TMP_DMG="/tmp/Docker.dmg"
+curl -L -o "$TMP_DMG" "$DOCKER_URL"
+
+# Mount and install
+echo "Installing Docker Desktop..."
+hdiutil attach "$TMP_DMG" -nobrowse
+sudo cp -R "/Volumes/Docker/Docker.app" /Applications/
+hdiutil detach "/Volumes/Docker"
+rm "$TMP_DMG"
+
+echo "Docker Desktop installed successfully!"
+echo "You can start Docker from /Applications/Docker.app"
 exit 0
 {{ else }}
 # Check if Docker is already installed

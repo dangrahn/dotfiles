@@ -24,5 +24,4 @@ brew "opencode"       # AI coding agent
 brew "postgresql@17"
 brew "redis"
 
-# Docker
-cask "docker-desktop"  # Docker Desktop (macOS only)
+# Docker (installed via run_once_before_install-docker.sh)

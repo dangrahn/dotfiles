@@ -7,8 +7,18 @@ set -e
 
 echo "=== Setting up dotfiles ==="
 
-# Ensure Homebrew is in PATH
-if [[ -d /home/linuxbrew/.linuxbrew ]]; then
+# Ensure Homebrew is in PATH based on platform and architecture
+if [[ "$(uname)" == "Darwin" ]]; then
+    # macOS: Check for ARM64 (Apple Silicon) or x86_64 (Intel)
+    if [[ -d /opt/homebrew ]]; then
+        # Apple Silicon Homebrew
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -d /usr/local/Homebrew ]]; then
+        # Intel Homebrew
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+elif [[ -d /home/linuxbrew/.linuxbrew ]]; then
+    # Linux Homebrew
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
