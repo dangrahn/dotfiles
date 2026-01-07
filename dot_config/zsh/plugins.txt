@@ -10,7 +10,8 @@ ohmyzsh/ohmyzsh path:lib/key-bindings.zsh
 
 # Useful plugins
 ohmyzsh/ohmyzsh path:plugins/git
-ohmyzsh/ohmyzsh path:plugins/docker
+# Docker plugin loaded conditionally in .zshrc (see Tool Integrations section)
+# ohmyzsh/ohmyzsh path:plugins/docker
 
 # Syntax highlighting and suggestions (load last)
 zsh-users/zsh-autosuggestions
