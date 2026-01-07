@@ -47,7 +47,11 @@
     last = log -1 HEAD
 
 [credential]
+{{- if eq .chezmoi.os "darwin" }}
+    helper = osxkeychain
+{{- else if eq .chezmoi.os "linux" }}
     helper = store
+{{- end }}
 
 [help]
     autocorrect = 1

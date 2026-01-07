@@ -74,6 +74,7 @@ fi
 
 # GRC colorization
 if command -v grc &> /dev/null; then
+    [[ -f /opt/homebrew/etc/grc.zsh ]] && source /opt/homebrew/etc/grc.zsh
     [[ -f /home/linuxbrew/.linuxbrew/etc/grc.zsh ]] && source /home/linuxbrew/.linuxbrew/etc/grc.zsh
 fi
 
