@@ -10,6 +10,7 @@ Modern dotfiles managed with [chezmoi](https://chezmoi.io/).
 - **zellij** - Terminal multiplexer
 - **git-delta** - Better git diffs
 - **fnm** - Fast Node Manager
+- **nix** - Reproducible development environments
 - **direnv** - Per-directory environment
 - **opencode** - AI coding agent
 - **claude-code** - Anthropic's Claude CLI
@@ -91,7 +92,7 @@ chsh -s $(which zsh)
 
 Log out of your session and log back in for the shell change to take effect.
 
-Node.js 23, opencode, and claude-code are installed automatically during chezmoi apply.
+Node.js 23, Nix, opencode, and claude-code are installed automatically during chezmoi apply.
 
 ## Structure
 
@@ -222,3 +223,32 @@ git push
 | `extract <file>` | Extract any archive |
 | `mkcd <dir>` | mkdir && cd |
 | `e [file]` | Open $EDITOR |
+
+## Nix Development Environments
+
+Projects with `flake.nix` automatically load their development environment via direnv.
+
+```bash
+# Enter project directory
+cd ~/code/yourproject
+
+# Allow direnv (first time only)
+direnv allow
+
+# Environment loads automatically - all tools available
+```
+
+### Useful Commands
+
+```bash
+# Manually enter dev shell
+nix develop
+
+# Update flake dependencies
+nix flake update
+
+# Clean up old packages (run periodically)
+nix-collect-garbage -d
+```
+
+Nix stores packages in `/nix/store`. The first environment build downloads packages (may take a few minutes), subsequent loads are instant.
