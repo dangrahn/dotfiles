@@ -1,8 +1,8 @@
 # chezmoi configuration
 # This file prompts for user data during 'chezmoi init'
 
-{{- $email := promptStringOnce . "email" "Email address" -}}
-{{- $name := promptStringOnce . "name" "Full name" -}}
+{{- $email := promptStringOnce . "email" "Email address" }}
+{{- $name := promptStringOnce . "name" "Full name" }}
 
 [data]
     email = {{ $email | quote }}

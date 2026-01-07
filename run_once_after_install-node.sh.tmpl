@@ -17,7 +17,7 @@ if command -v fnm &> /dev/null; then
     echo "Installing Node.js 23 via fnm..."
     fnm install 23
     fnm default 23
-    eval "$(fnm env)"
+    eval "$(fnm env --shell bash)"
 
     echo "Installing global npm packages..."
     npm install -g @anthropic-ai/claude-code
