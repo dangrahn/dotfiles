@@ -23,3 +23,6 @@ brew "opencode"       # AI coding agent
 # Databases
 brew "postgresql@17"
 brew "redis"
+
+# Docker
+cask "docker"  # Docker Desktop (macOS only)
