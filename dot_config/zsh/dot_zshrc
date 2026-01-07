@@ -64,9 +64,9 @@ bindkey '^[[1;5D' backward-word  # Ctrl+Left
 
 # Docker (conditional - only load plugin if Docker is available)
 if command -v docker &> /dev/null; then
-    antidote load <<EOF
-ohmyzsh/ohmyzsh path:plugins/docker
-EOF
+    export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+    [[ -d "$ZSH_CACHE_DIR/completions" ]] || mkdir -p "$ZSH_CACHE_DIR/completions"
+    source <(antidote bundle ohmyzsh/ohmyzsh path:plugins/docker)
 fi
 
 # direnv
