@@ -44,13 +44,42 @@ brew install chezmoi
 
 This will prompt for your name and email, then install all Homebrew packages from the Brewfile.
 
+#### Option A: Symlink to Default Location (Recommended for Development)
+
+This allows you to keep your dotfiles in `~/code/dangrahn/dotfiles` while using the standard `chezmoi apply` command without the `--source` flag.
+
 ```bash
-# From local directory
+# Clone or ensure dotfiles are at ~/code/dangrahn/dotfiles
+mkdir -p ~/code/dangrahn
+cd ~/code/dangrahn
+git clone git@github.com:dangrahn/dotfiles.git
+
+# Symlink to chezmoi's default source location
+mkdir -p ~/.local/share
+ln -sf ~/code/dangrahn/dotfiles ~/.local/share/chezmoi
+
+# Initialize and apply (no --source flag needed)
+chezmoi init --apply
+```
+
+#### Option B: Use Custom Source Directory
+
+```bash
+# From local directory (Linux)
 chezmoi init --source=/home/daniel/code/dangrahn/dotfiles --apply
 
-# Or from GitHub (after pushing)
+# From local directory (macOS)
+chezmoi init --source=/Users/daniel/code/dangrahn/dotfiles --apply
+```
+
+#### Option C: Clone from GitHub
+
+```bash
+# Recommended for fresh installs - chezmoi clones to its default location
 chezmoi init git@github.com:dangrahn/dotfiles.git --apply
 ```
+
+**Note:** With Option A (symlink), you can edit files in `~/code/dangrahn/dotfiles` and run `chezmoi apply` without any flags. With Option B, you must specify `--source` every time you run chezmoi commands.
 
 ### Step 6: Change Default Shell to zsh
 
@@ -90,17 +119,48 @@ Node.js 23, opencode, and claude-code are installed automatically during chezmoi
 
 ## Daily Usage
 
+### With Symlink Setup (Option A - Recommended)
+
 ```bash
-# Edit source and apply
+# Edit source files directly
 vim ~/code/dangrahn/dotfiles/dot_config/zsh/aliases.zsh
+
+# Apply changes
 chezmoi apply
 
-# Or edit applied file and re-add
-vim ~/.config/zsh/aliases.zsh
-chezmoi re-add
-
-# Commit changes
+# Commit and push
 cd ~/code/dangrahn/dotfiles
+git add -A && git commit -m "Update aliases"
+git push
+```
+
+### With Custom Source Directory (Option B)
+
+```bash
+# Edit source files directly
+vim ~/code/dangrahn/dotfiles/dot_config/zsh/aliases.zsh
+
+# Apply changes (must specify --source)
+chezmoi apply --source=/Users/daniel/code/dangrahn/dotfiles  # macOS
+chezmoi apply --source=/home/daniel/code/dangrahn/dotfiles   # Linux
+
+# Commit and push
+cd ~/code/dangrahn/dotfiles
+git add -A && git commit -m "Update aliases"
+git push
+```
+
+### With GitHub Clone (Option C)
+
+```bash
+# Edit with chezmoi
+chezmoi edit ~/.config/zsh/aliases.zsh
+
+# Apply changes
+chezmoi apply
+
+# Commit and push from chezmoi's source directory
+chezmoi cd
 git add -A && git commit -m "Update aliases"
 git push
 ```
