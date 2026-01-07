@@ -1,6 +1,12 @@
 # ~/.config/zsh/.zshenv - Environment variables
 # Loaded by: login shells, interactive shells, scripts
 
+# Ghostty terminfo fallback - must be early before other tools read TERM
+# If xterm-ghostty isn't in terminfo database, fall back to xterm-256color
+if [[ "$TERM" == "xterm-ghostty" ]] && ! infocmp xterm-ghostty &>/dev/null; then
+    export TERM="xterm-256color"
+fi
+
 # XDG Base Directories
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
