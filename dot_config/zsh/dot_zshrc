@@ -6,6 +6,20 @@
 # Create required directories
 [[ -d "${XDG_STATE_HOME}/zsh" ]] || mkdir -p "${XDG_STATE_HOME}/zsh"
 
+# ===== Completions (must be before plugins) =====
+
+autoload -Uz compinit
+# Only regenerate completion dump once per day
+if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+    compinit
+else
+    compinit -C
+fi
+
+# Completion styling
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # Case-insensitive
+
 # ===== Antidote Plugin Manager =====
 
 # Source antidote
@@ -32,20 +46,6 @@ setopt COMPLETE_IN_WORD     # Complete from cursor position
 setopt ALWAYS_TO_END        # Move cursor to end after completion
 setopt NO_BEEP              # No beeping
 setopt NO_LIST_BEEP         # No beeping on ambiguous completion
-
-# ===== Completions =====
-
-autoload -Uz compinit
-# Only regenerate completion dump once per day
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-    compinit
-else
-    compinit -C
-fi
-
-# Completion styling
-zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # Case-insensitive
 
 # ===== Key Bindings =====
 
