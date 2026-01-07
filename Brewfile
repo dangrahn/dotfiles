@@ -17,6 +17,9 @@ brew "git-delta"      # Better diffs
 brew "fnm"            # Fast Node Manager
 brew "direnv"         # Per-directory environment
 
+# AI Coding Tools
+brew "opencode"       # AI coding agent
+
 # Databases
 brew "postgresql@17"
 brew "redis"

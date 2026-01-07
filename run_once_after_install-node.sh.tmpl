@@ -1,0 +1,32 @@
+#!/bin/bash
+# run_once_after_install-node.sh
+# This script runs once after dotfiles are applied
+# Installs Node.js via fnm and global npm packages
+
+set -e
+
+echo "=== Setting up Node.js ==="
+
+# Ensure Homebrew is in PATH
+if [[ -d /home/linuxbrew/.linuxbrew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# Install Node.js via fnm
+if command -v fnm &> /dev/null; then
+    echo "Installing Node.js 23 via fnm..."
+    fnm install 23
+    fnm default 23
+    eval "$(fnm env)"
+
+    echo "Installing global npm packages..."
+    npm install -g @anthropic-ai/claude-code
+
+    echo "Node.js $(node --version) installed"
+    echo "npm $(npm --version) installed"
+else
+    echo "WARNING: fnm not found. Please install it first."
+    exit 1
+fi
+
+echo "=== Node.js setup complete ==="

@@ -11,6 +11,8 @@ Modern dotfiles managed with [chezmoi](https://chezmoi.io/).
 - **git-delta** - Better git diffs
 - **fnm** - Fast Node Manager
 - **direnv** - Per-directory environment
+- **opencode** - AI coding agent
+- **claude-code** - Anthropic's Claude CLI
 
 ## Installation
 
@@ -60,15 +62,7 @@ chsh -s $(which zsh)
 
 Log out of your session and log back in for the shell change to take effect.
 
-### Step 8: Install Node.js and Dev Tools
-
-After logging back in with zsh as your default shell:
-
-```bash
-fnm install 23
-fnm default 23
-npm install -g @anthropic-ai/claude-code opencode
-```
+Node.js 23, opencode, and claude-code are installed automatically during chezmoi apply.
 
 ## Structure
 
@@ -90,7 +84,8 @@ npm install -g @anthropic-ai/claude-code opencode
 │   │   ├── config.tmpl     # Git config (templated)
 │   │   └── ignore          # Global gitignore
 │   └── starship.toml       # Prompt config
-└── run_once_before_*.sh    # Setup script
+├── run_once_before_*.sh    # Package installation
+└── run_once_after_*.sh     # Node.js & npm setup
 ```
 
 ## Daily Usage
