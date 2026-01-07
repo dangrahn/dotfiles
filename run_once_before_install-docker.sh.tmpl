@@ -4,12 +4,11 @@
 
 set -e
 
-# Skip on macOS
 {{ if eq .chezmoi.os "darwin" }}
+# Skip on macOS
 echo "macOS detected - Docker Desktop will be installed via Homebrew"
 exit 0
-{{ end }}
-
+{{ else }}
 # Check if Docker is already installed
 if command -v docker &> /dev/null; then
     echo "Docker is already installed: $(docker --version)"
@@ -42,3 +41,4 @@ sudo usermod -aG docker "$USER"
 
 echo "Docker installed successfully!"
 echo "NOTE: Log out and back in for docker group membership to take effect."
+{{ end }}

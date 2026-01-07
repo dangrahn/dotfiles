@@ -15,7 +15,8 @@ fi
 # Install Homebrew packages
 if command -v brew &> /dev/null; then
     echo "Installing Homebrew packages..."
-    brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile"
+    # Continue even if some packages fail (e.g., Docker Desktop on macOS)
+    brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile" || echo "Some packages failed to install (this may be expected)"
 else
     echo "WARNING: Homebrew not found. Please install it first:"
     echo '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'

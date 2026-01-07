@@ -25,4 +25,4 @@ brew "postgresql@17"
 brew "redis"
 
 # Docker
-cask "docker"  # Docker Desktop (macOS only)
+cask "docker-desktop"  # Docker Desktop (macOS only)
