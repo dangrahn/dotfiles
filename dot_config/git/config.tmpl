@@ -5,6 +5,10 @@
     name = {{ .name }}
     email = {{ .email }}
 
+# Inter-IKEA Digital projects
+[includeIf "gitdir:~/code/Inter-IKEA-Digital/"]
+    path = ~/.config/git/config-inter-ikea
+
 [init]
     defaultBranch = main
 
