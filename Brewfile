@@ -3,6 +3,7 @@
 
 # Core
 brew "chezmoi"
+brew "jq"             # JSON processor
 
 # Shell & Terminal
 brew "starship"       # Modern prompt

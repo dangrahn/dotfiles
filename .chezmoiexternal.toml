@@ -12,3 +12,10 @@
     type = "git-repo"
     url = "https://github.com/ComposioHQ/awesome-claude-skills.git"
     refreshPeriod = "168h"  # Update weekly
+
+# Claude Code marketplace plugins
+# These are installed to ~/.claude/plugins/marketplaces/ and registered automatically
+[".claude/plugins/marketplaces/sawyerhood/dev-browser"]
+    type = "git-repo"
+    url = "https://github.com/sawyerhood/dev-browser.git"
+    refreshPeriod = "168h"  # Update weekly

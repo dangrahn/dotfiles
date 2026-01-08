@@ -1,0 +1,135 @@
+#!/bin/bash
+# Setup Claude Code marketplace plugins by registering them in config files
+# This runs whenever .chezmoiexternal.toml changes (new plugins added)
+# hash: {{ include ".chezmoiexternal.toml" | sha256sum }}
+
+set -e
+
+CLAUDE_DIR="$HOME/.claude"
+PLUGINS_DIR="$CLAUDE_DIR/plugins"
+MARKETPLACES_DIR="$PLUGINS_DIR/marketplaces"
+KNOWN_MARKETPLACES="$PLUGINS_DIR/known_marketplaces.json"
+INSTALLED_PLUGINS="$PLUGINS_DIR/installed_plugins.json"
+
+# Create plugins directory if it doesn't exist
+mkdir -p "$PLUGINS_DIR"
+
+# Exit if no marketplaces directory exists yet
+if [ ! -d "$MARKETPLACES_DIR" ]; then
+    echo "No marketplaces directory found at $MARKETPLACES_DIR"
+    exit 0
+fi
+
+echo "Setting up Claude Code marketplace plugins..."
+
+# Initialize known_marketplaces.json if it doesn't exist
+if [ ! -f "$KNOWN_MARKETPLACES" ]; then
+    echo '{}' > "$KNOWN_MARKETPLACES"
+fi
+
+# Initialize installed_plugins.json if it doesn't exist
+if [ ! -f "$INSTALLED_PLUGINS" ]; then
+    echo '{"version": 2, "plugins": {}}' > "$INSTALLED_PLUGINS"
+fi
+
+# Function to add a marketplace to known_marketplaces.json
+add_marketplace() {
+    local owner="$1"
+    local repo="$2"
+    local marketplace_id="$owner/$repo"
+    local install_location="$MARKETPLACES_DIR/$owner/$repo"
+
+    # Check if marketplace already registered
+    if jq -e ".[\"$marketplace_id\"]" "$KNOWN_MARKETPLACES" > /dev/null 2>&1; then
+        echo "  Marketplace '$marketplace_id' already registered"
+        return 0
+    fi
+
+    # Add marketplace entry
+    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
+    jq --arg id "$marketplace_id" \
+       --arg owner "$owner" \
+       --arg repo "$repo" \
+       --arg loc "$install_location" \
+       --arg ts "$timestamp" \
+       '. + {($id): {"source": {"source": "github", "repo": ($owner + "/" + $repo)}, "installLocation": $loc, "lastUpdated": $ts}}' \
+       "$KNOWN_MARKETPLACES" > "$KNOWN_MARKETPLACES.tmp" && mv "$KNOWN_MARKETPLACES.tmp" "$KNOWN_MARKETPLACES"
+
+    echo "  Registered marketplace: $marketplace_id"
+}
+
+# Function to add a plugin to installed_plugins.json
+add_plugin() {
+    local plugin_name="$1"
+    local owner="$2"
+    local repo="$3"
+    local plugin_id="$plugin_name@$owner/$repo"
+    local install_path="$MARKETPLACES_DIR/$owner/$repo"
+
+    # Check if plugin already installed
+    if jq -e ".plugins[\"$plugin_id\"]" "$INSTALLED_PLUGINS" > /dev/null 2>&1; then
+        echo "  Plugin '$plugin_id' already installed"
+        return 0
+    fi
+
+    # Add plugin entry
+    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
+    jq --arg id "$plugin_id" \
+       --arg path "$install_path" \
+       --arg ts "$timestamp" \
+       '.plugins[$id] = [{"scope": "user", "installPath": $path, "version": "unknown", "installedAt": $ts, "lastUpdated": $ts, "isLocal": true}]' \
+       "$INSTALLED_PLUGINS" > "$INSTALLED_PLUGINS.tmp" && mv "$INSTALLED_PLUGINS.tmp" "$INSTALLED_PLUGINS"
+
+    echo "  Installed plugin: $plugin_id"
+}
+
+# Process marketplace plugins cloned via chezmoi
+# Structure: ~/.claude/plugins/marketplaces/<owner>/<repo>/
+for owner_dir in "$MARKETPLACES_DIR"/*/; do
+    [ -d "$owner_dir" ] || continue
+    owner=$(basename "$owner_dir")
+
+    # Skip claude-plugins-official (managed by Claude Code itself)
+    [[ "$owner" == "claude-plugins-official" ]] && continue
+
+    for repo_dir in "$owner_dir"*/; do
+        [ -d "$repo_dir" ] || continue
+        repo=$(basename "$repo_dir")
+
+        # Check for plugin.json (standard plugin format)
+        if [ -f "$repo_dir/plugin.json" ]; then
+            echo "Processing plugin: $owner/$repo"
+
+            # Extract plugin name from plugin.json
+            plugin_name=$(jq -r '.name // empty' "$repo_dir/plugin.json" 2>/dev/null)
+            if [ -z "$plugin_name" ]; then
+                echo "  Warning: Could not extract plugin name from plugin.json, using repo name"
+                plugin_name="$repo"
+            fi
+
+            # Register marketplace and install plugin
+            add_marketplace "$owner" "$repo"
+            add_plugin "$plugin_name" "$owner" "$repo"
+
+        # Check for .claude-plugin/marketplace.json (marketplace format)
+        elif [ -f "$repo_dir/.claude-plugin/marketplace.json" ]; then
+            echo "Processing marketplace: $owner/$repo"
+
+            # Register the marketplace first
+            add_marketplace "$owner" "$repo"
+
+            # Extract and install each plugin defined in the marketplace
+            plugin_count=$(jq '.plugins | length' "$repo_dir/.claude-plugin/marketplace.json" 2>/dev/null)
+            for ((i=0; i<plugin_count; i++)); do
+                plugin_name=$(jq -r ".plugins[$i].name // empty" "$repo_dir/.claude-plugin/marketplace.json" 2>/dev/null)
+                if [ -n "$plugin_name" ]; then
+                    add_plugin "$plugin_name" "$owner" "$repo"
+                fi
+            done
+        else
+            echo "  Warning: No plugin.json or .claude-plugin/marketplace.json found in $repo_dir, skipping"
+        fi
+    done
+done
+
+echo "Claude Code marketplace plugins setup complete!"
