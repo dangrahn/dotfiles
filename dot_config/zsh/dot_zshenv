@@ -35,6 +35,10 @@ if command -v fnm &> /dev/null; then
     eval "$(fnm env --use-on-cd)"
 fi
 
+# Bun JavaScript runtime
+export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 # Editor
 export EDITOR="${EDITOR:-vim}"
 export VISUAL="${VISUAL:-$EDITOR}"
