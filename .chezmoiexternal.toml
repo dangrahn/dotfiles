@@ -15,6 +15,13 @@
 
 # Claude Code marketplace plugins
 # These are auto-registered by run_onchange_after_setup-claude-plugins.sh.tmpl
+
+# Official Claude plugins marketplace (code-simplifier, etc.)
+[".claude/plugins/marketplaces/anthropics/claude-plugins-official"]
+    type = "git-repo"
+    url = "https://github.com/anthropics/claude-plugins-official.git"
+    refreshPeriod = "168h"  # Update weekly
+
 [".claude/plugins/marketplaces/SawyerHood/dev-browser"]
     type = "git-repo"
     url = "https://github.com/SawyerHood/dev-browser.git"
