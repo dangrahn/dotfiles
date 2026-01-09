@@ -16,7 +16,6 @@ brew "git-delta"      # Better diffs
 
 # Development
 brew "fnm"            # Fast Node Manager
-brew "bun"            # JavaScript runtime & package manager
 brew "direnv"         # Per-directory environment
 
 # AI Coding Tools
