@@ -20,8 +20,8 @@ fi
 
 echo "Setting up Claude Code skills..."
 
-# Track skills we've processed to handle conflicts
-declare -A processed_skills
+# Track processed skills using a simple string (bash 3.2 compatible)
+processed_skills=""
 
 # Loop through each community repo
 for repo in "$COMMUNITY_DIR"/*/; do
@@ -43,24 +43,27 @@ for repo in "$COMMUNITY_DIR"/*/; do
         if [ -f "$skill_dir/SKILL.md" ]; then
             target_link="$SKILLS_DIR/$skill_name"
 
-            # Check for conflicts
-            if [ -n "${processed_skills[$skill_name]}" ]; then
-                echo "  Warning: Skill '$skill_name' already exists from ${processed_skills[$skill_name]}, skipping"
+            # Check if already processed (bash 3.2 compatible)
+            if echo "$processed_skills" | grep -q "|$skill_name|"; then
+                echo "  Warning: Skill '$skill_name' already exists, skipping"
                 continue
             fi
 
-            # Remove existing symlink or directory
-            if [ -L "$target_link" ]; then
-                rm "$target_link"
-            elif [ -d "$target_link" ]; then
+            # Skip if local skill directory exists (not a symlink)
+            if [ -d "$target_link" ] && [ ! -L "$target_link" ]; then
                 echo "  Warning: '$skill_name' is a local skill directory, skipping"
                 continue
+            fi
+
+            # Remove existing symlink
+            if [ -L "$target_link" ]; then
+                rm "$target_link"
             fi
 
             # Create symlink
             ln -s "$skill_dir" "$target_link"
             echo "  Linked: $skill_name"
-            processed_skills[$skill_name]="$repo_name"
+            processed_skills="${processed_skills}|${skill_name}|"
         fi
     done
 done
