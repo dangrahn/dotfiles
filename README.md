@@ -10,6 +10,7 @@ Modern dotfiles managed with [chezmoi](https://chezmoi.io/).
 - **zellij** - Terminal multiplexer
 - **git-delta** - Better git diffs
 - **fnm** - Fast Node Manager
+- **bun** - JavaScript runtime & package manager
 - **nix** - Reproducible development environments
 - **direnv** - Per-directory environment
 - **opencode** - AI coding agent
@@ -92,7 +93,7 @@ chsh -s $(which zsh)
 
 Log out of your session and log back in for the shell change to take effect.
 
-Node.js 23, Nix, opencode, and claude-code are installed automatically during chezmoi apply.
+Node.js 23, Bun, Nix, opencode, and claude-code are installed automatically during chezmoi apply.
 
 ## Structure
 

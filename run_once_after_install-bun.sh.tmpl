@@ -1,0 +1,29 @@
+#!/bin/bash
+# run_once_after_install-bun.sh
+# This script runs once after dotfiles are applied
+# Verifies bun installation and optionally installs global packages
+
+set -e
+
+echo "=== Setting up Bun ==="
+
+# Ensure Homebrew is in PATH
+if [[ -d /home/linuxbrew/.linuxbrew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# Verify bun installation
+if command -v bun &> /dev/null; then
+    echo "Bun $(bun --version) installed"
+
+    # Optionally install global bun packages here
+    # Example:
+    # echo "Installing global bun packages..."
+    # bun add -g <package-name>
+
+else
+    echo "WARNING: bun not found. Please run 'brew install bun' or visit https://bun.sh"
+    exit 1
+fi
+
+echo "=== Bun setup complete ==="
